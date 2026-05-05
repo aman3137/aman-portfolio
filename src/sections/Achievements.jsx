@@ -32,7 +32,7 @@ const Achievements = () => {
               
               <div className="bg-white/50 border border-slate-100 rounded-xl p-6">
                 <p className="text-slate-600 leading-relaxed mb-4">
-                  Successfully filed over <strong className="text-slate-800">8 patents</strong> in the fields of Artificial Intelligence, Internet of Things (IoT), and smart systems.
+                  Successfully filed over <strong className="text-slate-800">8 patents</strong> in the field of industrial design.
                 </p>
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg font-semibold text-sm">
                   <span className="relative flex h-3 w-3">
