@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Download } from 'lucide-react';
 import Section from '../components/Section';
+import profilePhoto from '../assets/profile-photo.jpeg';
 
 const Hero = () => {
   return (
@@ -55,10 +56,11 @@ const Hero = () => {
           <div className="absolute inset-0 bg-gradient-to-tr from-primary-200 to-blue-200 rounded-full blur-3xl opacity-50 animate-pulse"></div>
           
           <div className="relative w-72 h-72 md:w-96 md:h-96 rounded-full glass border-4 border-white/50 shadow-2xl overflow-hidden flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
-            {/* Placeholder for an actual photo. We can replace this with an img tag later */}
-            <div className="text-8xl text-primary-200 font-bold opacity-50 select-none">
-              AK
-            </div>
+            <img 
+              src={profilePhoto} 
+              alt="Aman Kumar" 
+              className="w-full h-full object-cover"
+            />
           </div>
           
           {/* Floating badge */}
