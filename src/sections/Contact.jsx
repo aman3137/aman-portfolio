@@ -12,24 +12,26 @@ const Contact = () => {
     setStatus('Sending...');
     const form = e.target;
     
-    // Web3Forms integration - Replace "YOUR_ACCESS_KEY_HERE" with a real key from web3forms.com
-    const formData = new FormData(form);
-    formData.append("access_key", "YOUR_ACCESS_KEY_HERE"); 
-
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
+      const response = await fetch("https://formsubmit.co/ajax/itsamanarya@gmail.com", {
         method: "POST",
-        body: formData
+        headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            name: form.name.value,
+            email: form.email.value,
+            message: form.message.value,
+            _subject: "New message from Aman's Portfolio"
+        })
       });
 
-      const data = await response.json();
-
-      if (data.success) {
+      if (response.ok) {
         setStatus("Message sent successfully!");
         form.reset();
       } else {
-        console.error("Error", data);
-        setStatus(data.message);
+        setStatus("Oops! Something went wrong.");
       }
     } catch (error) {
       console.error(error);
