@@ -1,23 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Award, FileText, CheckCircle } from 'lucide-react';
+import { Award, FileText } from 'lucide-react';
 import Section from '../components/Section';
-
-// Add your published patents here!
-const publishedPatents = [
-  {
-    title: "Method and System for AI-Augmented Supply Chain Optimization",
-    applicationNumber: "IN2023XXXXXXX",
-    date: "Aug 2023",
-    description: "A novel system using machine learning algorithms to predict supply chain anomalies and optimize routing in real-time."
-  },
-  {
-    title: "Smart IoT Architecture for Automated Precision Farming",
-    applicationNumber: "IN2023YYYYYYY",
-    date: "Nov 2023",
-    description: "An integrated framework of soil sensors and cloud-based analytics to automate irrigation systems."
-  }
-];
 
 const Achievements = () => {
   return (
@@ -57,45 +41,9 @@ const Achievements = () => {
                   </span>
                   4 Patents Published
                 </div>
-              </div>
-
-              {/* List of Published Patents */}
-              <div className="mt-8 space-y-4">
-                <h4 className="text-lg font-bold text-slate-800 mb-4">Published Patents Details</h4>
-                {publishedPatents.map((patent, index) => (
-                  <motion.div 
-                    key={index}
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    className="bg-slate-50 border border-slate-100 p-5 rounded-xl hover:shadow-md transition-shadow"
-                  >
-                    <div className="flex gap-3 items-start">
-                      <div className="mt-1 text-primary-500 flex-shrink-0">
-                        <CheckCircle size={18} />
-                      </div>
-                      <div>
-                        <h5 className="font-bold text-slate-800 leading-tight mb-1">{patent.title}</h5>
-                        <div className="flex gap-3 text-xs font-semibold text-slate-500 mb-2">
-                          <span className="bg-slate-200 px-2 py-0.5 rounded text-slate-600">{patent.applicationNumber}</span>
-                          <span>•</span>
-                          <span>{patent.date}</span>
-                        </div>
-                        <p className="text-sm text-slate-600 leading-relaxed">
-                          {patent.description}
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-                
-                <div className="pt-2 text-sm text-slate-500 italic">
-                  * Replace these placeholder patents with your actual patent details in the code!
                 </div>
               </div>
             </div>
-          </div>
         </motion.div>
       </div>
     </Section>
