@@ -44,7 +44,6 @@ const Achievements = () => {
                 </div>
               </div>
             </div>
-          </div>
         </motion.div>
       </div>
     </Section>
