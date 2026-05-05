@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Section from '../components/Section';
 import SnakeGame from '../components/games/SnakeGame';
-import WordPuzzle from '../components/games/WordPuzzle';
-import Sudoku from '../components/games/Sudoku';
-import { Gamepad2, Brain, Grid3X3 } from 'lucide-react';
+import FlappyBird from '../components/games/FlappyBird';
+import MemoryMatch from '../components/games/MemoryMatch';
+import { Gamepad2, Bird, LayoutGrid } from 'lucide-react';
 
 const FunZone = () => {
   const [activeGame, setActiveGame] = useState('snake');
@@ -24,26 +24,26 @@ const FunZone = () => {
             Snake Game
           </button>
           <button
-            onClick={() => setActiveGame('word')}
+            onClick={() => setActiveGame('flappy')}
             className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${
-              activeGame === 'word'
+              activeGame === 'flappy'
                 ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 -translate-y-1'
                 : 'bg-white text-slate-600 shadow-sm hover:shadow-md hover:text-blue-600'
             }`}
           >
-            <Brain size={20} />
-            Word Puzzle
+            <Bird size={20} />
+            Flappy Cube
           </button>
           <button
-            onClick={() => setActiveGame('sudoku')}
+            onClick={() => setActiveGame('memory')}
             className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${
-              activeGame === 'sudoku'
-                ? 'bg-slate-800 text-white shadow-lg shadow-slate-800/30 -translate-y-1'
-                : 'bg-white text-slate-600 shadow-sm hover:shadow-md hover:text-slate-800'
+              activeGame === 'memory'
+                ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/30 -translate-y-1'
+                : 'bg-white text-slate-600 shadow-sm hover:shadow-md hover:text-amber-500'
             }`}
           >
-            <Grid3X3 size={20} />
-            Sudoku
+            <LayoutGrid size={20} />
+            Memory Match
           </button>
         </div>
 
@@ -57,22 +57,22 @@ const FunZone = () => {
               <SnakeGame />
             </div>
           )}
-          {activeGame === 'word' && (
+          {activeGame === 'flappy' && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold text-slate-800">Tech Dictionary Puzzle</h3>
-                <p className="text-slate-500">Match the computer science terms with their definitions.</p>
+                <h3 className="text-2xl font-bold text-slate-800">Flappy Cube</h3>
+                <p className="text-slate-500">A top-tier smartphone classic. Tap or click to fly!</p>
               </div>
-              <WordPuzzle />
+              <FlappyBird />
             </div>
           )}
-          {activeGame === 'sudoku' && (
+          {activeGame === 'memory' && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold text-slate-800">Sudoku Challenge</h3>
-                <p className="text-slate-500">Train your logical thinking.</p>
+                <h3 className="text-2xl font-bold text-slate-800">Memory Match</h3>
+                <p className="text-slate-500">Test your memory in this casual card matching game.</p>
               </div>
-              <Sudoku />
+              <MemoryMatch />
             </div>
           )}
         </div>
