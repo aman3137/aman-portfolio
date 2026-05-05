@@ -28,7 +28,7 @@ const Hero = () => {
 
           <div className="flex flex-wrap gap-4">
             <a
-              href="/Resume.pdf"
+              href={`${import.meta.env.BASE_URL}Resume.pdf`}
               download="Aman_Kumar_Resume.pdf"
               className="inline-flex items-center px-6 py-3 rounded-xl bg-primary-600 text-white font-semibold shadow-lg shadow-primary-500/30 hover:bg-primary-700 transition-all hover:-translate-y-1"
             >
