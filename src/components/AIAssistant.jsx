@@ -12,10 +12,22 @@ const AIAssistant = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
+  const [showTooltip, setShowTooltip] = useState(true);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isOpen]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowTooltip(true);
+      setTimeout(() => {
+        setShowTooltip(false);
+      }, 1000);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // ── Smart Rule-Based Logic based on User's Profile ──────────────────────────
   const getResponse = (query) => {
@@ -86,10 +98,10 @@ const AIAssistant = () => {
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
 
       {/* Cloud in the head (Tooltip) */}
-      {!isOpen && (
+      {!isOpen && showTooltip && (
         <div className="relative mb-2">
-          <div className="bg-white text-slate-700 px-4 py-2 rounded-full text-sm font-medium shadow-lg border border-slate-100 whitespace-nowrap animate-pulse">
-            Ask me anything about Aman 💭
+          <div className="bg-white text-slate-700 px-4 py-2 rounded-full text-sm font-medium shadow-lg border border-slate-100 whitespace-nowrap">
+            Ask me 💭
             <div className="absolute bottom-[-5px] right-6 w-3 h-3 bg-white border-r border-b border-slate-100 transform rotate-45"></div>
           </div>
         </div>
