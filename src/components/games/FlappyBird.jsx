@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Play } from 'lucide-react';
+import { Play, Maximize, X } from 'lucide-react';
 
 const GRAVITY = 0.6;
 const JUMP = -8;
@@ -17,6 +17,7 @@ const FlappyBird = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [score, setScore] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const gameRef = useRef();
 
   const jump = useCallback(() => {
@@ -102,9 +103,27 @@ const FlappyBird = () => {
   }, [birdVel, birdPos, isPlaying]);
 
   return (
-    <div className="flex flex-col items-center justify-center w-full">
-      <div className="mb-4">
+    <div className={`flex flex-col items-center justify-center w-full ${isFullscreen ? 'fixed inset-0 z-50 bg-slate-50 p-6 overflow-y-auto flex-col items-center justify-center' : ''}`}>
+      {isFullscreen && (
+        <button 
+          onClick={() => setIsFullscreen(false)} 
+          className="absolute top-4 right-4 text-slate-700 hover:text-rose-600 transition-colors z-20"
+          aria-label="Close Fullscreen"
+        >
+          <X size={28} />
+        </button>
+      )}
+      <div className="mb-4 flex gap-4 items-center">
         <span className="text-2xl font-black text-slate-800">Score: {score}</span>
+        {!isFullscreen && (
+          <button 
+            onClick={() => setIsFullscreen(true)} 
+            className="text-slate-500 hover:text-primary-600 transition-colors p-1"
+            title="Go Fullscreen"
+          >
+            <Maximize size={20} />
+          </button>
+        )}
       </div>
       
       <div 

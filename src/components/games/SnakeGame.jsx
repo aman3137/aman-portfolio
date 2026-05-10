@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Maximize, X } from 'lucide-react';
 
 const GRID_SIZE = 20;
 const INITIAL_SNAKE = [{ x: 10, y: 10 }];
@@ -16,6 +16,7 @@ const SnakeGame = () => {
   const [score, setScore] = useState(0);
   const [speed, setSpeed] = useState(INITIAL_SPEED);
   const [leaderboard, setLeaderboard] = useState([]);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   
   const boardRef = useRef(null);
 
@@ -175,10 +176,28 @@ const SnakeGame = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-8 items-start w-full">
+    <div className={`flex flex-col md:flex-row gap-8 items-start w-full ${isFullscreen ? 'fixed inset-0 z-50 bg-slate-50 p-6 overflow-y-auto flex-col items-center justify-center' : ''}`}>
+      {isFullscreen && (
+        <button 
+          onClick={() => setIsFullscreen(false)} 
+          className="absolute top-4 right-4 text-slate-700 hover:text-rose-600 transition-colors z-20"
+          aria-label="Close Fullscreen"
+        >
+          <X size={28} />
+        </button>
+      )}
       <div className="flex-1 w-full flex flex-col items-center">
-        <div className="mb-4 flex justify-between w-full max-w-sm px-4">
+        <div className="mb-4 flex justify-between w-full max-w-sm px-4 items-center">
           <span className="font-bold text-slate-700">Score: {score}</span>
+          {!isFullscreen && (
+            <button 
+              onClick={() => setIsFullscreen(true)} 
+              className="text-slate-500 hover:text-primary-600 transition-colors p-1"
+              title="Go Fullscreen"
+            >
+              <Maximize size={20} />
+            </button>
+          )}
           <span className="text-rose-600 font-bold animate-pulse">Obstacles: {obstacles.length}</span>
         </div>
         
