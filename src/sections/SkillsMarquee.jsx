@@ -1,4 +1,5 @@
 import React from 'react';
+import { Terminal } from 'lucide-react';
 
 const SkillsMarquee = () => {
   const skills = [
@@ -17,7 +18,10 @@ const SkillsMarquee = () => {
             <div className="w-3 h-3 rounded-full bg-amber-500"></div>
             <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
           </div>
-          <div className="text-xs font-mono text-slate-400">skills_stream.log</div>
+          <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-lg border border-slate-100 shadow-sm">
+            <Terminal size={12} className="text-slate-400" />
+            <span className="text-xs font-mono text-slate-500 font-medium">skills_stream.log</span>
+          </div>
         </div>
         
         {/* Content - Marquee */}
