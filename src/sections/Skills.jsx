@@ -38,20 +38,24 @@ const Skills = () => {
             whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: isMobile ? 0 : index * 0.1 }}
-            className="glass p-6 rounded-2xl h-full hover:-translate-y-2 transition-transform duration-300"
+            className="h-full"
           >
-            <h3 className="text-lg font-bold text-slate-800 mb-4 pb-2 border-b border-slate-200">
-              {category.title}
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {category.skills.map((skill) => (
-                <span
-                  key={skill}
-                  className="px-3 py-1 bg-white shadow-sm border border-slate-100 rounded-lg text-sm font-medium text-primary-700"
-                >
-                  {skill}
-                </span>
-              ))}
+            <div className="animate-floating h-full">
+              <div className="glass p-6 rounded-2xl h-full hover:-translate-y-2 transition-transform duration-300">
+                <h3 className="text-lg font-bold text-slate-800 mb-4 pb-2 border-b border-slate-200">
+                  {category.title}
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {category.skills.map((skill) => (
+                    <span
+                      key={skill}
+                      className="px-3 py-1 bg-white shadow-sm border border-slate-100 rounded-lg text-sm font-medium text-primary-700"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           </motion.div>
         ))}

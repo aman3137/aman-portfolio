@@ -65,12 +65,18 @@ const Projects = () => {
                 whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: isMobile ? 0 : index * 0.1 }}
-                className={`glass rounded-3xl flex flex-col h-full group hover:shadow-xl transition-all overflow-hidden ${project.link ? 'cursor-pointer' : ''}`}
-                onClick={() => {
-                  if (project.link) window.open(project.link, '_blank', 'noopener,noreferrer');
-                }}
+                className="h-full"
               >
-                {innerContent}
+                <div className="animate-floating h-full">
+                  <div
+                    className={`glass rounded-3xl flex flex-col h-full group hover:shadow-xl transition-all overflow-hidden ${project.link ? 'cursor-pointer' : ''}`}
+                    onClick={() => {
+                      if (project.link) window.open(project.link, '_blank', 'noopener,noreferrer');
+                    }}
+                  >
+                    {innerContent}
+                  </div>
+                </div>
               </motion.div>
             );
           })}
