@@ -5,6 +5,8 @@ import Section from '../components/Section';
 import profilePhoto from '../assets/profile-photo.jpeg';
 
 const Hero = () => {
+  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
+
   return (
     <Section id="home" className="min-h-screen flex items-center pt-32">
       <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -65,8 +67,8 @@ const Hero = () => {
           
           {/* Floating badge */}
           <motion.div 
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            animate={isMobile ? {} : { y: [0, -10, 0] }}
+            transition={isMobile ? {} : { duration: 4, repeat: Infinity, ease: "easeInOut" }}
             className="absolute bottom-10 -left-6 glass px-6 py-3 rounded-2xl flex items-center gap-3 shadow-xl"
           >
             <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
