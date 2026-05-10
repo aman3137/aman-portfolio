@@ -28,7 +28,7 @@ const SkillsMarquee = () => {
         <div className="py-16 overflow-hidden bg-white relative">
           <div className="flex animate-marquee whitespace-nowrap">
             {/* First list */}
-            <div className="flex items-center gap-6 text-xl md:text-2xl font-bold text-emerald-400">
+            <div className="flex items-center gap-6 text-xl md:text-2xl font-bold text-primary-400">
               {skills.map((skill, index) => (
                 <span key={index} className="flex items-center gap-6">
                   <span>{skill}</span>
@@ -37,7 +37,7 @@ const SkillsMarquee = () => {
               ))}
             </div>
             {/* Duplicated list for seamless loop */}
-            <div className="flex items-center gap-6 text-xl md:text-2xl font-bold text-emerald-400">
+            <div className="flex items-center gap-6 text-xl md:text-2xl font-bold text-primary-400">
               {skills.map((skill, index) => (
                 <span key={`dup-${index}`} className="flex items-center gap-6">
                   <span>{skill}</span>
