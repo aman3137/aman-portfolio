@@ -9,6 +9,7 @@ import Achievements from './sections/Achievements';
 import Leadership from './sections/Leadership';
 import Contact from './sections/Contact';
 import FunZone from './sections/FunZone';
+import AIAssistant from './components/AIAssistant';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Contact />
         </main>
         <Footer />
+        <AIAssistant />
       </div>
     </div>
   );
