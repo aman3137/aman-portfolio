@@ -10,6 +10,7 @@ import Leadership from './sections/Leadership';
 import Contact from './sections/Contact';
 import FunZone from './sections/FunZone';
 import AIAssistant from './components/AIAssistant';
+import SkillsMarquee from './sections/SkillsMarquee';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Hero />
           <About />
           <Skills />
+          <SkillsMarquee />
           <Projects />
           <Achievements />
           <Leadership />
