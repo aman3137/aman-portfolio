@@ -2,12 +2,14 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const Section = ({ id, title, children, className = '' }) => {
+  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
+
   return (
     <section id={id} className={`py-20 px-6 md:px-12 lg:px-24 max-w-7xl mx-auto ${className}`}>
       {title && (
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.5 }}
           className="mb-12 flex flex-col items-center text-center"
@@ -17,10 +19,10 @@ const Section = ({ id, title, children, className = '' }) => {
         </motion.div>
       )}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.5, delay: 0.2 }}
+        transition={{ duration: 0.5, delay: isMobile ? 0 : 0.2 }}
       >
         {children}
       </motion.div>

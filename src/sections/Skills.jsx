@@ -26,16 +26,18 @@ const skillCategories = [
 ];
 
 const Skills = () => {
+  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
+
   return (
     <Section id="skills" title="Technical Skills">
       <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
         {skillCategories.map((category, index) => (
           <motion.div
             key={category.title}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
+            transition={{ duration: 0.5, delay: isMobile ? 0 : index * 0.1 }}
             className="glass p-6 rounded-2xl h-full hover:-translate-y-2 transition-transform duration-300"
           >
             <h3 className="text-lg font-bold text-slate-800 mb-4 pb-2 border-b border-slate-200">

@@ -26,6 +26,7 @@ const featuredProjects = [
 ];
 
 const Projects = () => {
+  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
 
   return (
     <Section id="projects" title="Projects & Experience" className="bg-slate-50/50">
@@ -60,10 +61,10 @@ const Projects = () => {
             return (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ duration: 0.5, delay: isMobile ? 0 : index * 0.1 }}
                 className={`glass rounded-3xl flex flex-col h-full group hover:shadow-xl transition-all overflow-hidden ${project.link ? 'cursor-pointer' : ''}`}
                 onClick={() => {
                   if (project.link) window.open(project.link, '_blank', 'noopener,noreferrer');
