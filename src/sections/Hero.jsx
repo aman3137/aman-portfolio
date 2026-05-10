@@ -53,7 +53,7 @@ const Hero = () => {
           className="relative flex justify-center"
         >
           {/* Decorative elements */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-primary-200 to-blue-200 rounded-full blur-3xl opacity-50 animate-pulse"></div>
+          <div className="absolute inset-0 bg-gradient-to-tr from-primary-200 to-blue-200 rounded-full blur-3xl opacity-50"></div>
           
           <div className="relative w-72 h-72 md:w-96 md:h-96 rounded-full glass border-4 border-white/50 shadow-2xl overflow-hidden flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
             <img 
