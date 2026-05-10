@@ -31,7 +31,7 @@ const SkillsMarquee = () => {
             <div className="flex items-center gap-6 text-xl md:text-2xl font-bold text-slate-900">
               {skills.map((skill, index) => (
                 <span key={index} className="flex items-center gap-6">
-                  <span>{skill}</span>
+                  <span className="hover:scale-125 transition-transform duration-200 cursor-pointer inline-block">{skill}</span>
                   <span className="text-slate-300">•</span>
                 </span>
               ))}
@@ -40,7 +40,7 @@ const SkillsMarquee = () => {
             <div className="flex items-center gap-6 text-xl md:text-2xl font-bold text-slate-900">
               {skills.map((skill, index) => (
                 <span key={`dup-${index}`} className="flex items-center gap-6">
-                  <span>{skill}</span>
+                  <span className="hover:scale-125 transition-transform duration-200 cursor-pointer inline-block">{skill}</span>
                   <span className="text-slate-300">•</span>
                 </span>
               ))}

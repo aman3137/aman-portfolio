@@ -25,6 +25,9 @@
   .animate-marquee {
     animation: marquee 8s linear infinite;
   }
+  .animate-marquee:hover {
+    animation-play-state: paused;
+  }
   .animate-floating {
     animation: floating 4s ease-in-out infinite;
   }
