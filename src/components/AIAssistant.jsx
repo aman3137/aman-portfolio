@@ -20,35 +20,43 @@ const AIAssistant = () => {
   const knowledgeBase = [
     {
       keywords: ['hi', 'hello', 'hey', 'greetings'],
-      response: "Hello! How can I help you learn more about Aman today?"
+      response: "Hello there! I'm doing great. How can I help you explore Aman's work and background today?"
     },
     {
       keywords: ['name', 'who are you', 'who is he'],
-      response: "This is the portfolio of Aman Kumar, a Computer Science Engineer passionate about AI, IoT, and full-stack development."
+      response: "I'm the AI assistant for Aman Kumar. Aman is a Computer Science Engineer with a passion for building scalable systems, intelligent automation, and IoT solutions."
     },
     {
       keywords: ['skill', 'languages', 'tech', 'framework', 'database'],
-      response: "Aman is skilled in Java, Python, C/C++, JavaScript, React, Node.js, Tailwind CSS, Docker, Git, SQL, and AI workflow automation tools like Zapier and n8n."
+      response: "Aman has a diverse skill set! He works with languages like Java, Python, C/C++, and JavaScript. For frameworks, he uses React, Node.js, and Tailwind CSS. He's also proficient with databases like SQL, MySQL, and tools like Docker, Git, and Linux. Plus, he's big into AI workflow automation!"
+    },
+    {
+      keywords: ['ai automation', 'automation', 'workflow'],
+      response: "AI Automation involves using artificial intelligence (like machine learning or rule-based systems) to automate complex business processes and workflows without human intervention. Aman is highly skilled in this area! He uses cutting-edge tools like Zapier and n8n to connect applications and create intelligent, self-running workflows. He's passionate about saving time and reducing errors through automation."
+    },
+    {
+      keywords: ['iot', 'internet of things'],
+      response: "IoT (Internet of Things) refers to connecting physical devices to the internet to collect and share data. Aman has a solid background in IoT, including a project on 'Automated Farming' where he used soil sensors and real-time cloud monitoring to optimize irrigation."
     },
     {
       keywords: ['project', 'work', 'build'],
-      response: "Aman has worked on several impressive projects: 1. AI-Augmented CPS for Supply Chain Optimization. 2. Automated Farming Using IoT. 3. Voice-Based Web Browsing App for Disabled People."
+      response: "Aman has built some really cool projects! 1. An AI-Augmented CPS for Supply Chain Optimization. 2. An Automated Farming system using IoT. 3. A Voice-Based Web Browsing App for disabled individuals. Which one would you like to hear more about?"
     },
     {
       keywords: ['education', 'college', 'university', 'study'],
-      response: "Aman holds a Bachelor of Engineering (B.E.) in Computer Science and Engineering from Chandigarh University."
+      response: "Aman graduated with a Bachelor of Engineering (B.E.) in Computer Science and Engineering from Chandigarh University. He built a strong foundation there in software engineering and research."
     },
     {
       keywords: ['patent', 'research', 'publish'],
-      response: "Aman has a strong research background with over 8 patents filed in the field of industrial design, and 4 of them have been published!"
+      response: "Aman is quite the innovator! He has filed over 8 patents, mostly in the field of industrial design, and 4 of them have already been published. He loves turning new ideas into protectable intellectual property."
     },
     {
-      keywords: ['contact', 'email', 'phone', 'reach', 'linkedin', 'github'],
-      response: "You can reach Aman via email at itsamanarya@gmail.com. You can also find his LinkedIn and GitHub profiles in the header and footer of this site."
+      keywords: ['contact', 'email', 'reach', 'linkedin', 'github'],
+      response: "You can reach out to Aman directly at itsamanarya@gmail.com. You can also connect with him on LinkedIn or check out his code on GitHub using the links on this page!"
     },
     {
       keywords: ['location', 'where', 'live'],
-      response: "Aman is based in Madhubani, Bihar, India."
+      response: "Aman is located in Madhubani, Bihar, India, but he's open to opportunities globally!"
     }
   ];
 
@@ -61,7 +69,14 @@ const AIAssistant = () => {
       }
     }
     
-    return "I'm not sure about that specific detail. You can check the relevant section on the website or contact Aman directly at itsamanarya@gmail.com!";
+    // Smart fallback simulating a real AI assistant
+    const fallbacks = [
+      "That's a great question! While I operate like a smart AI, I am specialized to answer questions about Aman's professional background, skills, and projects. Feel free to ask about his experience in AI Automation or his patents!",
+      "I'm not sure I have the data for that specific topic in my knowledge base. I'm trained on Aman's resume and portfolio. Try asking about his skills, projects, or education!",
+      "I'd love to chat about that, but my main job is to help you learn about Aman Kumar! Ask me about his work with IoT or his patents."
+    ];
+    
+    return fallbacks[Math.floor(Math.random() * fallbacks.length)];
   };
 
   const handleSend = (e) => {
