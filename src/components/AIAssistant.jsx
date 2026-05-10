@@ -1,43 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Bot, User, Sparkles } from 'lucide-react';
 
-// ─── Aman's full profile injected as system context ───────────────────────────
-const SYSTEM_PROMPT = `You are a smart AI assistant embedded on Aman Kumar's personal portfolio website.
-Your ONLY job is to answer questions about Aman Kumar based on his profile below.
-
-You must:
-- Understand short/abbreviated queries like "proj" (projects), "edu" (education),
-  "sk" or "skills", "pat" (patents), "loc" (location), "exp" (experience), "contact" or "mail"
-- Understand typos, slang, and informal phrasing
-- Give concise, friendly, helpful answers (2-5 sentences max)
-- Stay strictly on-topic about Aman's profile
-- If asked something unrelated, politely redirect to Aman's work
-
-AMAN'S PROFILE:
-Name: Aman Kumar
-Email: itsamanarya@gmail.com
-Location: Madhubani, Bihar, India (open to global opportunities)
-Education: B.E. in Computer Science & Engineering, Chandigarh University
-
-Skills:
-- Languages: Java, Python, C/C++, JavaScript
-- Frameworks: React, Node.js, Tailwind CSS
-- Databases: SQL, MySQL
-- Tools: Docker, Git, Linux
-- Specialties: AI workflow automation (Zapier, n8n), IoT systems
-
-Projects:
-1. AI-Augmented CPS for Supply Chain Optimization — uses AI for smarter supply chain decisions
-2. Automated Farming (IoT) — soil sensors + real-time cloud monitoring to optimize irrigation
-3. Voice-Based Web Browsing App — accessibility tool for disabled individuals to browse the web via voice
-
-Patents: Filed 8+ patents in industrial design; 4 already published
-
-Contact: itsamanarya@gmail.com | LinkedIn and GitHub available on the portfolio page
-
-Always be warm, professional, and concise. Never make up information not listed above.`;
-
-// ─── Component ─────────────────────────────────────────────────────────────────
 const AIAssistant = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
@@ -49,46 +12,56 @@ const AIAssistant = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
-  // Keeps a rolling multi-turn history for the API (excludes the welcome message)
-  const historyRef = useRef([]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isOpen]);
 
-  // ── Call Claude API ──────────────────────────────────────────────────────────
-  const fetchReply = async (userText) => {
-    historyRef.current.push({ role: 'user', content: userText });
-
-    // Keep history window reasonable (last 20 turns)
-    if (historyRef.current.length > 20) {
-      historyRef.current = historyRef.current.slice(-20);
+  // ── Smart Rule-Based Logic based on User's Profile ──────────────────────────
+  const getResponse = (query) => {
+    const q = query.toLowerCase();
+    
+    // Abbreviated or keyword matches
+    if (q.includes('proj') || q.includes('work')) {
+      return "Aman has worked on some great projects:\n1. AI-Augmented CPS for Supply Chain Optimization\n2. Automated Farming using IoT\n3. Voice-Based Web Browsing App for disabled people.\nWhich one interests you?";
+    }
+    
+    if (q.includes('skills') || q.includes('sk') || q.includes('tech') || q.includes('languages')) {
+      return "Aman is skilled in Java, Python, C/C++, and JavaScript. He uses frameworks like React, Node.js, and Tailwind CSS. He's also specialized in AI workflow automation (Zapier, n8n) and IoT systems!";
+    }
+    
+    if (q.includes('edu') || q.includes('college') || q.includes('university')) {
+      return "Aman holds a Bachelor of Engineering (B.E.) in Computer Science & Engineering from Chandigarh University.";
+    }
+    
+    if (q.includes('pat') || q.includes('patent') || q.includes('publish')) {
+      return "Aman has a strong research background with over 8 patents filed in industrial design, and 4 of them have already been published!";
+    }
+    
+    if (q.includes('loc') || q.includes('where') || q.includes('live')) {
+      return "Aman is based in Madhubani, Bihar, India, but he is open to global opportunities!";
+    }
+    
+    if (q.includes('contact') || q.includes('mail') || q.includes('email')) {
+      return "You can reach Aman at itsamanarya@gmail.com. You can also find his LinkedIn and GitHub links in the header and footer of this site.";
     }
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'anthropic-version': '2023-06-01',
-        'x-api-key': 'YOUR_ANTHROPIC_API_KEY' // TODO: Replace with your key (Note: frontend exposure is insecure)
-      },
-      body: JSON.stringify({
-        model: 'claude-3-5-sonnet-20241022', // Updated to a valid model name as requested by user or best guess
-        max_tokens: 300,
-        system: SYSTEM_PROMPT,
-        messages: historyRef.current,
-      }),
-    });
+    if (q.includes('ai automation') || q.includes('automation')) {
+      return "Aman specializes in AI workflow automation! He uses tools like Zapier and n8n to build intelligent, self-running workflows that connect apps and save time.";
+    }
 
-    const data = await response.json();
-    const reply =
-      data.content
-        ?.filter((b) => b.type === 'text')
-        .map((b) => b.text)
-        .join('') || "Sorry, I couldn't fetch a response. Please try again!";
+    if (q.includes('hi') || q.includes('hello') || q.includes('hey')) {
+      return "Hey there! How can I help you explore Aman's background today?";
+    }
 
-    historyRef.current.push({ role: 'assistant', content: reply });
-    return reply;
+    // Fallback simulating a smart AI
+    const fallbacks = [
+      "I'm specialized to answer questions about Aman's professional background, skills, and projects. Ask me about his projects or patents!",
+      "I'm not sure about that specific topic. I'm trained on Aman's resume. Try asking about his skills or projects!",
+      "I'd love to chat about that, but my main job is to help you learn about Aman Kumar! Ask me about his work with IoT or AI Automation."
+    ];
+    
+    return fallbacks[Math.floor(Math.random() * fallbacks.length)];
   };
 
   // ── Send handler ─────────────────────────────────────────────────────────────
@@ -101,25 +74,26 @@ const AIAssistant = () => {
     setMessages((prev) => [...prev, { role: 'user', content: userText }]);
     setIsLoading(true);
 
-    try {
-      const reply = await fetchReply(userText);
+    // Simulate thinking delay
+    setTimeout(() => {
+      const reply = getResponse(userText);
       setMessages((prev) => [...prev, { role: 'assistant', content: reply }]);
-    } catch {
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: 'assistant',
-          content: 'Oops! Connection issue. Please try again in a moment.',
-        },
-      ]);
-    } finally {
       setIsLoading(false);
-    }
+    }, 1200); // 1.2 seconds to look like it's thinking
   };
 
-  // ── Render ───────────────────────────────────────────────────────────────────
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+
+      {/* Cloud in the head (Tooltip) */}
+      {!isOpen && (
+        <div className="relative mb-2">
+          <div className="bg-white text-slate-700 px-4 py-2 rounded-full text-sm font-medium shadow-lg border border-slate-100 whitespace-nowrap animate-pulse">
+            Ask me anything about Aman 💭
+            <div className="absolute bottom-[-5px] right-6 w-3 h-3 bg-white border-r border-b border-slate-100 transform rotate-45"></div>
+          </div>
+        </div>
+      )}
 
       {/* Floating button */}
       {!isOpen && (
@@ -143,7 +117,7 @@ const AIAssistant = () => {
               <div>
                 <h3 className="font-bold text-sm">Aman's AI Assistant</h3>
                 <p className="text-xs text-primary-100 flex items-center gap-1">
-                  <Sparkles size={10} /> Powered by Claude · Always ready
+                  <Sparkles size={10} /> Smart Simulation · Always ready
                 </p>
               </div>
             </div>
@@ -176,12 +150,12 @@ const AIAssistant = () => {
                       {msg.role === 'user' ? 'You' : 'AI Assistant'}
                     </span>
                   </div>
-                  <p className="leading-relaxed">{msg.content}</p>
+                  <p className="whitespace-pre-line leading-relaxed">{msg.content}</p>
                 </div>
               </div>
             ))}
 
-            {/* Typing indicator */}
+            {/* Typing indicator (Thinking effect) */}
             {isLoading && (
               <div className="flex justify-start">
                 <div className="bg-white border border-slate-100 rounded-2xl rounded-bl-none shadow-sm p-3">
