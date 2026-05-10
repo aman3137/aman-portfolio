@@ -4,8 +4,8 @@ import { Terminal } from 'lucide-react';
 const SkillsMarquee = () => {
   const skills = [
     'JAVA', 'PYTHON', 'C/C++', 'JAVASCRIPT', 'REACT', 'NODE.JS', 
-    'TAILWIND CSS', 'DOCKER', 'GIT', 'LINUX', 'SQL', 'MYSQL', 
-    'AI AUTOMATION', 'IOT SYSTEMS'
+    'TAILWIND CSS', 'SQL', 'MYSQL', 'DOCKER', 'GIT', 'LINUX', 
+    'ZAPIER', 'N8N', 'AI AUTOMATION', 'IOT SYSTEMS'
   ];
 
   return (
@@ -28,18 +28,18 @@ const SkillsMarquee = () => {
         <div className="py-16 overflow-hidden bg-white relative">
           <div className="flex animate-marquee whitespace-nowrap">
             {/* First list */}
-            <div className="flex items-center gap-8 text-3xl md:text-4xl font-black text-emerald-700">
+            <div className="flex items-center gap-6 text-xl md:text-2xl font-bold text-emerald-400">
               {skills.map((skill, index) => (
-                <span key={index} className="flex items-center gap-8">
+                <span key={index} className="flex items-center gap-6">
                   <span>{skill}</span>
                   <span className="text-slate-300">•</span>
                 </span>
               ))}
             </div>
             {/* Duplicated list for seamless loop */}
-            <div className="flex items-center gap-8 text-3xl md:text-4xl font-black text-emerald-700">
+            <div className="flex items-center gap-6 text-xl md:text-2xl font-bold text-emerald-400">
               {skills.map((skill, index) => (
-                <span key={`dup-${index}`} className="flex items-center gap-8">
+                <span key={`dup-${index}`} className="flex items-center gap-6">
                   <span>{skill}</span>
                   <span className="text-slate-300">•</span>
                 </span>
