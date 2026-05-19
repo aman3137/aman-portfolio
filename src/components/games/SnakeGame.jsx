@@ -19,6 +19,8 @@ const SnakeGame = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   
   const boardRef = useRef(null);
+  const directionRef = useRef(INITIAL_DIRECTION);
+  const nextDirectionQueue = useRef([]);
 
   useEffect(() => {
     const saved = localStorage.getItem('snakeLeaderboard');
@@ -72,6 +74,8 @@ const SnakeGame = () => {
   const resetGame = () => {
     setSnake(INITIAL_SNAKE);
     setDirection(INITIAL_DIRECTION);
+    directionRef.current = INITIAL_DIRECTION;
+    nextDirectionQueue.current = [];
     setScore(0);
     setSpeed(INITIAL_SPEED);
     setObstacles([]);
@@ -83,11 +87,15 @@ const SnakeGame = () => {
 
   const changeDirection = (newDir) => {
     if (!isPlaying) return;
-    setDirection(prev => {
-      if (prev.x === 0 && newDir.x !== 0) return newDir;
-      if (prev.y === 0 && newDir.y !== 0) return newDir;
-      return prev;
-    });
+    const lastDir = nextDirectionQueue.current.length > 0 
+      ? nextDirectionQueue.current[nextDirectionQueue.current.length - 1] 
+      : directionRef.current;
+      
+    if (lastDir.x === 0 && newDir.x !== 0) {
+      nextDirectionQueue.current.push(newDir);
+    } else if (lastDir.y === 0 && newDir.y !== 0) {
+      nextDirectionQueue.current.push(newDir);
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -104,11 +112,18 @@ const SnakeGame = () => {
     if (!isPlaying || gameOver) return;
 
     const moveSnake = () => {
-      if (direction.x === 0 && direction.y === 0) return; // Snake is stopped (brakes/pause)
+      let currentDir = directionRef.current;
+      if (nextDirectionQueue.current.length > 0) {
+        currentDir = nextDirectionQueue.current.shift();
+        directionRef.current = currentDir;
+        setDirection(currentDir);
+      }
+
+      if (currentDir.x === 0 && currentDir.y === 0) return; // Snake is stopped (brakes/pause)
 
       setSnake((prevSnake) => {
         const head = prevSnake[0];
-        const newHead = { x: head.x + direction.x, y: head.y + direction.y };
+        const newHead = { x: head.x + currentDir.x, y: head.y + currentDir.y };
 
         const handleGameOver = () => {
           setIsPlaying(false);
@@ -252,9 +267,6 @@ const SnakeGame = () => {
             width: '100%',
             maxWidth: '400px',
             aspectRatio: '1/1',
-            display: 'grid',
-            gridTemplateColumns: `repeat(${GRID_SIZE}, 1fr)`,
-            gridTemplateRows: `repeat(${GRID_SIZE}, 1fr)`,
             border: '8px solid #2f2212',
             borderRadius: '16px',
             boxShadow: 'inset 0 0 50px rgba(0,0,0,0.5)'
@@ -280,79 +292,78 @@ const SnakeGame = () => {
             </div>
           )}
 
-          {Array.from({ length: GRID_SIZE * GRID_SIZE }).map((_, i) => {
-            const x = i % GRID_SIZE;
-            const y = Math.floor(i / GRID_SIZE);
-            const snakeIndex = snake.findIndex(s => s.x === x && s.y === y);
-            const isHead = snakeIndex === 0;
-            const isBody = snakeIndex > 0;
-            const isFood = food.x === x && food.y === y;
-            const isObstacle = obstacles.some(o => o.x === x && o.y === y);
+          {/* Food */}
+          <div 
+            className="absolute z-10 animate-bounce flex items-center justify-center"
+            style={{
+              width: `${100 / GRID_SIZE}%`, height: `${100 / GRID_SIZE}%`,
+              left: `${(food.x / GRID_SIZE) * 100}%`, top: `${(food.y / GRID_SIZE) * 100}%`
+            }}
+          >
+            <span className="text-[20px] drop-shadow-md leading-none">🍏</span>
+          </div>
 
-            let cellClass = "";
-            let innerStyle = {};
-            let cellContent = null;
+          {/* Obstacles */}
+          {obstacles.map((obs, i) => (
+            <div 
+              key={`obs-${i}`}
+              className="absolute z-10 flex items-center justify-center"
+              style={{
+                width: `${100 / GRID_SIZE}%`, height: `${100 / GRID_SIZE}%`,
+                left: `${(obs.x / GRID_SIZE) * 100}%`, top: `${(obs.y / GRID_SIZE) * 100}%`
+              }}
+            >
+              <span className="text-[20px] drop-shadow-md leading-none">🏔️</span>
+              <span className="absolute top-0 right-0 text-[12px] animate-pulse drop-shadow-[0_0_5px_rgba(250,204,21,1)] leading-none z-10">⚡</span>
+            </div>
+          ))}
 
+          {/* Snake */}
+          {snake.map((segment, i) => {
+            const isHead = i === 0;
+            let eye1Style = {};
+            let eye2Style = {};
+            
             if (isHead) {
-              cellClass = "z-20 relative shadow-[0_0_10px_rgba(0,0,0,0.5)]"; 
-              innerStyle = { 
-                borderRadius: '50%',
-                background: 'radial-gradient(circle at 30% 30%, #4ade80, #14532d)' 
-              };
-
               let dir = direction.x === 0 && direction.y === 0 ? {x: 0, y: -1} : direction;
-              let eye1Style = {};
-              let eye2Style = {};
-              
-              if (dir.x === 1) { // Right
-                  eye1Style = { right: '10%', top: '20%' };
-                  eye2Style = { right: '10%', bottom: '20%' };
-              } else if (dir.x === -1) { // Left
-                  eye1Style = { left: '10%', top: '20%' };
-                  eye2Style = { left: '10%', bottom: '20%' };
-              } else if (dir.y === 1) { // Down
-                  eye1Style = { bottom: '10%', left: '20%' };
-                  eye2Style = { bottom: '10%', right: '20%' };
-              } else { // Up
-                  eye1Style = { top: '10%', left: '20%' };
-                  eye2Style = { top: '10%', right: '20%' };
+              if (dir.x === 1) { 
+                  eye1Style = { right: '10%', top: '20%' }; eye2Style = { right: '10%', bottom: '20%' };
+              } else if (dir.x === -1) { 
+                  eye1Style = { left: '10%', top: '20%' }; eye2Style = { left: '10%', bottom: '20%' };
+              } else if (dir.y === 1) { 
+                  eye1Style = { bottom: '10%', left: '20%' }; eye2Style = { bottom: '10%', right: '20%' };
+              } else { 
+                  eye1Style = { top: '10%', left: '20%' }; eye2Style = { top: '10%', right: '20%' };
               }
-              
-              cellContent = (
-                <>
-                  <div className="absolute w-[30%] h-[30%] bg-white rounded-full flex items-center justify-center shadow-sm" style={eye1Style}>
-                    <div className="w-[50%] h-[50%] bg-black rounded-full" />
-                  </div>
-                  <div className="absolute w-[30%] h-[30%] bg-white rounded-full flex items-center justify-center shadow-sm" style={eye2Style}>
-                    <div className="w-[50%] h-[50%] bg-black rounded-full" />
-                  </div>
-                </>
-              );
-            } else if (isBody) {
-              cellClass = "z-10 relative shadow-sm"; 
-              innerStyle = { 
-                borderRadius: '50%',
-                background: 'radial-gradient(circle at 30% 30%, #22c55e, #14532d)'
-              }; 
-            } else if (isFood) {
-              cellClass = "z-10 animate-bounce flex items-center justify-center";
-              innerStyle = {};
-              cellContent = <span className="text-[20px] drop-shadow-md leading-none">🍏</span>;
-            } else if (isObstacle) {
-              cellClass = "z-10 flex items-center justify-center relative";
-              innerStyle = {};
-              cellContent = (
-                <>
-                  <span className="text-[20px] drop-shadow-md leading-none">🏔️</span>
-                  <span className="absolute top-0 right-0 text-[12px] animate-pulse drop-shadow-[0_0_5px_rgba(250,204,21,1)] leading-none z-10">⚡</span>
-                </>
-              );
             }
 
             return (
-              <div key={i} className="w-full h-full p-[1px]">
-                <div className={`w-full h-full ${cellClass}`} style={innerStyle}>
-                  {cellContent}
+              <div
+                key={`snake-${i}`}
+                className={`absolute p-[1px] ${isHead ? 'z-20' : 'z-10'}`}
+                style={{
+                  width: `${100 / GRID_SIZE}%`, height: `${100 / GRID_SIZE}%`,
+                  left: `${(segment.x / GRID_SIZE) * 100}%`, top: `${(segment.y / GRID_SIZE) * 100}%`,
+                  transition: 'left 0.1s linear, top 0.1s linear' // smooth movement
+                }}
+              >
+                <div className="w-full h-full relative" style={{
+                  borderRadius: '50%',
+                  background: isHead 
+                    ? 'radial-gradient(circle at 30% 30%, #4ade80, #14532d)' 
+                    : 'radial-gradient(circle at 30% 30%, #22c55e, #14532d)',
+                  boxShadow: isHead ? '0 0 10px rgba(0,0,0,0.5)' : '0 1px 3px rgba(0,0,0,0.3)'
+                }}>
+                  {isHead && (
+                    <>
+                      <div className="absolute w-[30%] h-[30%] bg-white rounded-full flex items-center justify-center shadow-sm" style={eye1Style}>
+                        <div className="w-[50%] h-[50%] bg-black rounded-full" />
+                      </div>
+                      <div className="absolute w-[30%] h-[30%] bg-white rounded-full flex items-center justify-center shadow-sm" style={eye2Style}>
+                        <div className="w-[50%] h-[50%] bg-black rounded-full" />
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             );
