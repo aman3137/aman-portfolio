@@ -326,23 +326,18 @@ const SnakeGame = () => {
                 background: 'radial-gradient(circle at 30% 30%, #22c55e, #14532d)'
               }; 
             } else if (isFood) {
-              cellClass = "z-10 shadow-lg animate-bounce rounded-full";
-              innerStyle = {
-                backgroundImage: 'url("https://images.unsplash.com/photo-1590004953392-5aba2e72269a?auto=format&fit=crop&w=100&q=80")', // Green food
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                borderRadius: '50%'
-              };
+              cellClass = "z-10 animate-bounce flex items-center justify-center";
+              innerStyle = {};
+              cellContent = <span className="text-[20px] drop-shadow-md leading-none">🍏</span>;
             } else if (isObstacle) {
-              cellClass = "z-10 shadow-xl rounded-full flex items-center justify-center";
-              innerStyle = {
-                backgroundImage: 'url("https://images.unsplash.com/photo-1502481854378-22aba67b3094?auto=format&fit=crop&w=100&q=80")', // Red/Black lava/mountain rock
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                borderRadius: '50%',
-                boxShadow: 'inset -5px -5px 15px rgba(0,0,0,0.8), 0 0 10px rgba(239,68,68,0.5)' // Red glow
-              };
-              cellContent = <span className="text-[10px] animate-pulse drop-shadow-[0_0_5px_rgba(250,204,21,1)]">⚡</span>;
+              cellClass = "z-10 flex items-center justify-center relative";
+              innerStyle = {};
+              cellContent = (
+                <>
+                  <span className="text-[20px] drop-shadow-md leading-none">🏔️</span>
+                  <span className="absolute top-0 right-0 text-[12px] animate-pulse drop-shadow-[0_0_5px_rgba(250,204,21,1)] leading-none z-10">⚡</span>
+                </>
+              );
             } else if (isGod) {
               cellClass = "z-10 shadow-[0_0_20px_rgba(250,204,21,0.8)] rounded-full flex items-center justify-center animate-pulse";
               innerStyle = {
