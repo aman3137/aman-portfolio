@@ -52,7 +52,7 @@ const FunZone = () => {
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold text-slate-800">Classic Snake</h3>
-                <p className="text-slate-500">A highly challenging version. Can you reach 100?</p>
+                <p className="text-slate-500">A highly challenging version. Can you reach 200?</p>
               </div>
               <SnakeGame />
             </div>
