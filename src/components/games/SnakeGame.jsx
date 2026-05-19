@@ -5,6 +5,7 @@ const GRID_SIZE = 20;
 const INITIAL_SNAKE = [{ x: 10, y: 10 }];
 const INITIAL_DIRECTION = { x: 0, y: 0 }; // Start stopped
 const INITIAL_SPEED = 150;
+const BIN_URL = 'https://jsonblob.com/api/jsonBlob/019e3e93-4a7a-7ba7-8827-ec516a09b1d7';
 
 const SnakeGame = () => {
   const [snake, setSnake] = useState(INITIAL_SNAKE);
@@ -24,8 +25,14 @@ const SnakeGame = () => {
   const scoreRef = useRef(0);
 
   useEffect(() => {
-    const saved = localStorage.getItem('snakeLeaderboard');
-    if (saved) setLeaderboard(JSON.parse(saved));
+    fetch(BIN_URL)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.leaderboard) {
+          setLeaderboard(data.leaderboard);
+        }
+      })
+      .catch(console.error);
   }, []);
 
   useEffect(() => {
@@ -37,13 +44,24 @@ const SnakeGame = () => {
     if (finalScore === 0) return;
     const name = prompt(`Game Over! Score: ${finalScore}. Enter your name:`) || 'Anonymous';
     
-    setLeaderboard(prev => {
-      const newLeaderboard = [...prev, { name, score: finalScore }]
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 3);
-      localStorage.setItem('snakeLeaderboard', JSON.stringify(newLeaderboard));
-      return newLeaderboard;
-    });
+    // Fetch latest to minimize race conditions, then update
+    fetch(BIN_URL)
+      .then(res => res.json())
+      .then(data => {
+        const currentLeaderboard = data.leaderboard || [];
+        const newLeaderboard = [...currentLeaderboard, { name, score: finalScore }]
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 5); // Keep top 5
+          
+        setLeaderboard(newLeaderboard);
+        
+        fetch(BIN_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ leaderboard: newLeaderboard })
+        }).catch(console.error);
+      })
+      .catch(console.error);
   }, []);
 
   const getRandomPos = useCallback(() => {
@@ -392,7 +410,7 @@ const SnakeGame = () => {
       </div>
 
       <div className="w-full md:w-64 glass p-6 rounded-2xl">
-        <h4 className="font-bold text-slate-800 mb-4 pb-2 border-b border-slate-200">Top 3 Leaderboard</h4>
+        <h4 className="font-bold text-slate-800 mb-4 pb-2 border-b border-slate-200">Top 5 Global Leaderboard 🌍</h4>
         {leaderboard.length === 0 ? (
           <p className="text-sm text-slate-500 italic">No scores yet. Be the first!</p>
         ) : (
@@ -400,8 +418,8 @@ const SnakeGame = () => {
             {leaderboard.map((entry, index) => (
               <li key={index} className="flex justify-between items-center bg-white/50 p-2 rounded-lg text-sm font-medium">
                 <span className="flex items-center gap-2">
-                  <span className={`w-5 h-5 flex items-center justify-center rounded-full text-white text-xs ${index === 0 ? 'bg-amber-400' : index === 1 ? 'bg-slate-300' : 'bg-amber-600'}`}>{index + 1}</span>
-                  {entry.name}
+                  <span className={`w-5 h-5 flex items-center justify-center rounded-full text-white text-xs ${index === 0 ? 'bg-amber-400' : index === 1 ? 'bg-slate-300' : index === 2 ? 'bg-amber-600' : 'bg-slate-400'}`}>{index + 1}</span>
+                  <span className="truncate max-w-[100px]" title={entry.name}>{entry.name}</span>
                 </span>
                 <span className="text-primary-600 font-bold">{entry.score}</span>
               </li>
