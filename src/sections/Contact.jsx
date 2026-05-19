@@ -12,18 +12,29 @@ const Contact = () => {
     setStatus('Sending...');
     const form = e.target;
     
+    const accessKey = import.meta.env.VITE_WEB3FORMS_KEY;
+
+    if (!accessKey) {
+      // Fallback to mailto if no access key is provided in .env
+      const body = `Name: ${form.name.value}\nEmail: ${form.email.value}\n\n${form.message.value}`;
+      window.location.href = `mailto:itsamanarya@gmail.com?subject=New message from Aman's Portfolio&body=${encodeURIComponent(body)}`;
+      setStatus("Key missing. Redirecting to your email client...");
+      return;
+    }
+
     try {
-      const response = await fetch("https://formsubmit.co/ajax/itsamanarya@gmail.com", {
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: { 
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         },
         body: JSON.stringify({
+            access_key: accessKey,
             name: form.name.value,
             email: form.email.value,
             message: form.message.value,
-            _subject: "New message from Aman's Portfolio"
+            subject: "New message from Aman's Portfolio"
         })
       });
 
@@ -31,11 +42,17 @@ const Contact = () => {
         setStatus("Message sent successfully!");
         form.reset();
       } else {
-        setStatus("Oops! Something went wrong.");
+        // Fallback to mailto if API fails
+        const body = `Name: ${form.name.value}\nEmail: ${form.email.value}\n\n${form.message.value}`;
+        window.location.href = `mailto:itsamanarya@gmail.com?subject=New message from Aman's Portfolio&body=${encodeURIComponent(body)}`;
+        setStatus("Service unavailable. Redirecting to your email client...");
       }
     } catch (error) {
       console.error(error);
-      setStatus("Something went wrong!");
+      // Fallback on network error
+      const body = `Name: ${form.name.value}\nEmail: ${form.email.value}\n\n${form.message.value}`;
+      window.location.href = `mailto:itsamanarya@gmail.com?subject=New message from Aman's Portfolio&body=${encodeURIComponent(body)}`;
+      setStatus("Network error. Redirecting to your email client...");
     }
   };
 
