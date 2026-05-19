@@ -6,6 +6,13 @@ const INITIAL_SNAKE = [{ x: 10, y: 10 }];
 const INITIAL_DIRECTION = { x: 0, y: 0 }; // Start stopped
 const INITIAL_SPEED = 150;
 
+const GOD_POSITIONS = [
+  { x: Math.floor(GRID_SIZE / 2), y: 0 },
+  { x: Math.floor(GRID_SIZE / 2), y: GRID_SIZE - 1 },
+  { x: 0, y: Math.floor(GRID_SIZE / 2) },
+  { x: GRID_SIZE - 1, y: Math.floor(GRID_SIZE / 2) }
+];
+
 const SnakeGame = () => {
   const [snake, setSnake] = useState(INITIAL_SNAKE);
   const [direction, setDirection] = useState(INITIAL_DIRECTION);
@@ -48,7 +55,8 @@ const SnakeGame = () => {
       newFood = getRandomPos();
       const onSnake = currentSnake.some(s => s.x === newFood.x && s.y === newFood.y);
       const onObstacle = currentObstacles.some(o => o.x === newFood.x && o.y === newFood.y);
-      if (!onSnake && !onObstacle) break;
+      const onGod = GOD_POSITIONS.some(g => g.x === newFood.x && g.y === newFood.y);
+      if (!onSnake && !onObstacle && !onGod) break;
     }
     setFood(newFood);
   }, [getRandomPos]);
@@ -60,11 +68,12 @@ const SnakeGame = () => {
       const onSnake = currentSnake.some(s => s.x === newObstacle.x && s.y === newObstacle.y);
       const onFood = currentFood.x === newObstacle.x && currentFood.y === newObstacle.y;
       const onObstacle = currentObstacles.some(o => o.x === newObstacle.x && o.y === newObstacle.y);
+      const onGod = GOD_POSITIONS.some(g => g.x === newObstacle.x && g.y === newObstacle.y);
       // Don't spawn too close to head
       const head = currentSnake[0];
       const distToHead = Math.abs(head.x - newObstacle.x) + Math.abs(head.y - newObstacle.y);
       
-      if (!onSnake && !onFood && !onObstacle && distToHead > 3) break;
+      if (!onSnake && !onFood && !onObstacle && !onGod && distToHead > 3) break;
     }
     return newObstacle;
   }, [getRandomPos]);
@@ -119,6 +128,12 @@ const SnakeGame = () => {
           }, 1000);
           return prevSnake;
         };
+
+        const isGod = GOD_POSITIONS.find(g => g.x === newHead.x && g.y === newHead.y);
+        if (isGod) {
+            setScore(s => s + 20); // Free gift bonus
+            return [newHead, ...prevSnake].slice(0, 2); // Shrink snake
+        }
 
         if (newHead.x < 0 || newHead.x >= GRID_SIZE || newHead.y < 0 || newHead.y >= GRID_SIZE) {
           return handleGameOver();
@@ -263,6 +278,7 @@ const SnakeGame = () => {
             const isBody = snakeIndex > 0;
             const isFood = food.x === x && food.y === y;
             const isObstacle = obstacles.some(o => o.x === x && o.y === y);
+            const isGod = GOD_POSITIONS.some(g => g.x === x && g.y === y);
 
             let cellClass = "";
             let innerStyle = {};
@@ -312,20 +328,28 @@ const SnakeGame = () => {
             } else if (isFood) {
               cellClass = "z-10 shadow-lg animate-bounce rounded-full";
               innerStyle = {
-                backgroundImage: 'url("https://images.unsplash.com/photo-1560806887-1e4cd0b6fac6?auto=format&fit=crop&w=100&q=80")',
+                backgroundImage: 'url("https://images.unsplash.com/photo-1590004953392-5aba2e72269a?auto=format&fit=crop&w=100&q=80")', // Green food
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 borderRadius: '50%'
               };
             } else if (isObstacle) {
-              cellClass = "z-10 shadow-xl rounded-full";
+              cellClass = "z-10 shadow-xl rounded-full flex items-center justify-center";
               innerStyle = {
-                backgroundImage: 'url("https://images.unsplash.com/photo-1525926477800-7a3af9215c0e?auto=format&fit=crop&w=100&q=80")',
+                backgroundImage: 'url("https://images.unsplash.com/photo-1502481854378-22aba67b3094?auto=format&fit=crop&w=100&q=80")', // Red/Black lava/mountain rock
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 borderRadius: '50%',
-                boxShadow: 'inset -5px -5px 15px rgba(0,0,0,0.6)'
+                boxShadow: 'inset -5px -5px 15px rgba(0,0,0,0.8), 0 0 10px rgba(239,68,68,0.5)' // Red glow
               };
+              cellContent = <span className="text-[10px] animate-pulse drop-shadow-[0_0_5px_rgba(250,204,21,1)]">⚡</span>;
+            } else if (isGod) {
+              cellClass = "z-10 shadow-[0_0_20px_rgba(250,204,21,0.8)] rounded-full flex items-center justify-center animate-pulse";
+              innerStyle = {
+                background: 'radial-gradient(circle, #fde047, #ca8a04)',
+                borderRadius: '50%'
+              };
+              cellContent = <span className="text-sm">👼</span>;
             }
 
             return (
