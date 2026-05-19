@@ -21,21 +21,30 @@ const SnakeGame = () => {
   const boardRef = useRef(null);
   const directionRef = useRef(INITIAL_DIRECTION);
   const nextDirectionQueue = useRef([]);
+  const scoreRef = useRef(0);
 
   useEffect(() => {
     const saved = localStorage.getItem('snakeLeaderboard');
     if (saved) setLeaderboard(JSON.parse(saved));
   }, []);
 
-  const saveScore = () => {
-    if (score === 0) return;
-    const name = prompt(`Game Over! Score: ${score}. Enter your name:`) || 'Anonymous';
-    const newLeaderboard = [...leaderboard, { name, score }]
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 3);
-    setLeaderboard(newLeaderboard);
-    localStorage.setItem('snakeLeaderboard', JSON.stringify(newLeaderboard));
-  };
+  useEffect(() => {
+    scoreRef.current = score;
+  }, [score]);
+
+  const saveScore = useCallback(() => {
+    const finalScore = scoreRef.current;
+    if (finalScore === 0) return;
+    const name = prompt(`Game Over! Score: ${finalScore}. Enter your name:`) || 'Anonymous';
+    
+    setLeaderboard(prev => {
+      const newLeaderboard = [...prev, { name, score: finalScore }]
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 3);
+      localStorage.setItem('snakeLeaderboard', JSON.stringify(newLeaderboard));
+      return newLeaderboard;
+    });
+  }, []);
 
   const getRandomPos = useCallback(() => {
     return {
