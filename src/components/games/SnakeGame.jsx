@@ -3,7 +3,7 @@ import { ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Maximize, X } from 'lucide-r
 
 const GRID_SIZE = 20;
 const INITIAL_SNAKE = [{ x: 10, y: 10 }];
-const INITIAL_DIRECTION = { x: 0, y: -1 };
+const INITIAL_DIRECTION = { x: 0, y: 0 }; // Start stopped
 const INITIAL_SPEED = 150;
 
 const SnakeGame = () => {
@@ -104,20 +104,32 @@ const SnakeGame = () => {
     if (!isPlaying || gameOver) return;
 
     const moveSnake = () => {
+      if (direction.x === 0 && direction.y === 0) return; // Snake is stopped (brakes/pause)
+
       setSnake((prevSnake) => {
         const head = prevSnake[0];
         const newHead = { x: head.x + direction.x, y: head.y + direction.y };
 
+        const handleGameOver = () => {
+          setIsPlaying(false);
+          // 1 second delay (break) before showing game over state properly and saving score
+          setTimeout(() => {
+            setGameOver(true);
+            saveScore();
+          }, 1000);
+          return prevSnake;
+        };
+
         if (newHead.x < 0 || newHead.x >= GRID_SIZE || newHead.y < 0 || newHead.y >= GRID_SIZE) {
-          setGameOver(true); setIsPlaying(false); saveScore(); return prevSnake;
+          return handleGameOver();
         }
 
         if (prevSnake.some(s => s.x === newHead.x && s.y === newHead.y)) {
-          setGameOver(true); setIsPlaying(false); saveScore(); return prevSnake;
+          return handleGameOver();
         }
 
         if (obstacles.some(o => o.x === newHead.x && o.y === newHead.y)) {
-          setGameOver(true); setIsPlaying(false); saveScore(); return prevSnake;
+          return handleGameOver();
         }
 
         const newSnake = [newHead, ...prevSnake];
@@ -207,31 +219,34 @@ const SnakeGame = () => {
           onKeyDown={handleKeyDown}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
-          className="relative bg-emerald-900 outline-none rounded-xl overflow-hidden shadow-2xl border-4 border-emerald-800"
+          className="relative outline-none overflow-hidden shadow-2xl"
           style={{
+            backgroundColor: '#008000', // Green background like Python script
             width: '100%',
             maxWidth: '400px',
             aspectRatio: '1/1',
             display: 'grid',
             gridTemplateColumns: `repeat(${GRID_SIZE}, 1fr)`,
             gridTemplateRows: `repeat(${GRID_SIZE}, 1fr)`,
+            border: '10px solid #004d00'
           }}
         >
           {!isPlaying && !gameOver && (
-            <div className="absolute inset-0 bg-black/70 flex items-center justify-center z-10 flex-col gap-4">
-              <p className="text-white text-center px-4 font-medium">Swipe on mobile or use Arrow keys. Avoid the rocks!</p>
-              <button onClick={resetGame} className="px-6 py-2 bg-emerald-500 text-white rounded-lg font-bold hover:bg-emerald-600">
-                Start Game
+            <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10 flex-col gap-4">
+              <p className="text-white text-center px-4 font-bold text-lg">Python Classic Snake</p>
+              <p className="text-white text-center px-4 font-medium text-sm">Press Arrow Keys to start moving!</p>
+              <button onClick={resetGame} className="px-6 py-2 bg-black text-white border-2 border-white rounded-none font-bold hover:bg-white hover:text-black transition-colors">
+                Play Now
               </button>
             </div>
           )}
           
           {gameOver && (
             <div className="absolute inset-0 bg-black/80 flex items-center justify-center z-10 flex-col gap-4">
-              <p className="text-white text-2xl font-bold">Game Over!</p>
-              <p className="text-rose-400 font-medium text-lg">Score: {score}</p>
-              <button onClick={resetGame} className="px-6 py-2 bg-emerald-500 text-white rounded-lg font-bold hover:bg-emerald-600">
-                Try Again
+              <p className="text-white text-3xl font-bold font-mono">Game Over</p>
+              <p className="text-white font-medium text-xl font-mono">Score: {score}</p>
+              <button onClick={resetGame} className="px-6 py-2 bg-white text-black rounded-none border-2 border-white font-bold hover:bg-black hover:text-white transition-colors">
+                Play Again
               </button>
             </div>
           )}
@@ -249,20 +264,20 @@ const SnakeGame = () => {
             let innerStyle = {};
 
             if (isHead) {
-              cellClass = "bg-green-400 z-10";
-              // Make head rounded based on direction
-              if (direction.x === 1) innerStyle = { borderRadius: '0 50% 50% 0' };
-              else if (direction.x === -1) innerStyle = { borderRadius: '50% 0 0 50%' };
-              else if (direction.y === 1) innerStyle = { borderRadius: '0 0 50% 50%' };
-              else if (direction.y === -1) innerStyle = { borderRadius: '50% 50% 0 0' };
+              cellClass = "bg-black z-10"; // Black square head
+              innerStyle = { borderRadius: '0' }; // Realistic square
             } else if (isBody) {
-              // Alternating realistic snake pattern
-              cellClass = snakeIndex % 2 === 0 ? "bg-green-600" : "bg-green-700";
-              innerStyle = { borderRadius: '4px' };
+              cellClass = "bg-gray-500"; // Grey square body
+              innerStyle = { border: '1px solid #4b5563', borderRadius: '0' }; // Classic distinct segments
             } else if (isFood) {
-              cellClass = "bg-rose-500 rounded-full scale-75 shadow-[0_0_15px_rgba(244,63,94,1)] animate-bounce";
+              cellClass = "bg-red-600 rounded-full scale-75"; // Red circle food
             } else if (isObstacle) {
-              cellClass = "bg-stone-500 rounded-sm scale-90 border-2 border-stone-600 shadow-inner";
+              // "Breaks" / Bricks
+              cellClass = "bg-orange-800 rounded-sm";
+              innerStyle = {
+                backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(255,255,255,0.1) 4px, rgba(255,255,255,0.1) 8px)',
+                border: '1px solid #7c2d12'
+              };
             }
 
             return (
