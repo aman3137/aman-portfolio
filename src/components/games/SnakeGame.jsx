@@ -221,18 +221,22 @@ const SnakeGame = () => {
           onTouchEnd={handleTouchEnd}
           className="relative outline-none overflow-hidden shadow-2xl"
           style={{
-            backgroundColor: '#008000', // Green background like Python script
+            backgroundImage: 'url("https://images.unsplash.com/photo-1542273917363-3b1817f69a5d?auto=format&fit=crop&w=800&q=80")',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
             width: '100%',
             maxWidth: '400px',
             aspectRatio: '1/1',
             display: 'grid',
             gridTemplateColumns: `repeat(${GRID_SIZE}, 1fr)`,
             gridTemplateRows: `repeat(${GRID_SIZE}, 1fr)`,
-            border: '10px solid #004d00'
+            border: '8px solid #2f2212',
+            borderRadius: '16px',
+            boxShadow: 'inset 0 0 50px rgba(0,0,0,0.5)'
           }}
         >
           {!isPlaying && !gameOver && (
-            <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10 flex-col gap-4">
+            <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-30 flex-col gap-4 rounded-xl">
               <p className="text-white text-center px-4 font-bold text-lg">Python Classic Snake</p>
               <p className="text-white text-center px-4 font-medium text-sm">Press Arrow Keys to start moving!</p>
               <button onClick={resetGame} className="px-6 py-2 bg-black text-white border-2 border-white rounded-none font-bold hover:bg-white hover:text-black transition-colors">
@@ -242,7 +246,7 @@ const SnakeGame = () => {
           )}
           
           {gameOver && (
-            <div className="absolute inset-0 bg-black/80 flex items-center justify-center z-10 flex-col gap-4">
+            <div className="absolute inset-0 bg-black/80 flex items-center justify-center z-30 flex-col gap-4 rounded-xl">
               <p className="text-white text-3xl font-bold font-mono">Game Over</p>
               <p className="text-white font-medium text-xl font-mono">Score: {score}</p>
               <button onClick={resetGame} className="px-6 py-2 bg-white text-black rounded-none border-2 border-white font-bold hover:bg-black hover:text-white transition-colors">
@@ -262,27 +266,73 @@ const SnakeGame = () => {
 
             let cellClass = "";
             let innerStyle = {};
+            let cellContent = null;
 
             if (isHead) {
-              cellClass = "bg-black z-10"; // Black square head
-              innerStyle = { borderRadius: '0' }; // Realistic square
+              cellClass = "z-20 relative shadow-[0_0_10px_rgba(0,0,0,0.5)]"; 
+              innerStyle = { 
+                borderRadius: '50%',
+                background: 'radial-gradient(circle at 30% 30%, #4ade80, #14532d)' 
+              };
+
+              let dir = direction.x === 0 && direction.y === 0 ? {x: 0, y: -1} : direction;
+              let eye1Style = {};
+              let eye2Style = {};
+              
+              if (dir.x === 1) { // Right
+                  eye1Style = { right: '10%', top: '20%' };
+                  eye2Style = { right: '10%', bottom: '20%' };
+              } else if (dir.x === -1) { // Left
+                  eye1Style = { left: '10%', top: '20%' };
+                  eye2Style = { left: '10%', bottom: '20%' };
+              } else if (dir.y === 1) { // Down
+                  eye1Style = { bottom: '10%', left: '20%' };
+                  eye2Style = { bottom: '10%', right: '20%' };
+              } else { // Up
+                  eye1Style = { top: '10%', left: '20%' };
+                  eye2Style = { top: '10%', right: '20%' };
+              }
+              
+              cellContent = (
+                <>
+                  <div className="absolute w-[30%] h-[30%] bg-white rounded-full flex items-center justify-center shadow-sm" style={eye1Style}>
+                    <div className="w-[50%] h-[50%] bg-black rounded-full" />
+                  </div>
+                  <div className="absolute w-[30%] h-[30%] bg-white rounded-full flex items-center justify-center shadow-sm" style={eye2Style}>
+                    <div className="w-[50%] h-[50%] bg-black rounded-full" />
+                  </div>
+                </>
+              );
             } else if (isBody) {
-              cellClass = "bg-gray-500"; // Grey square body
-              innerStyle = { border: '1px solid #4b5563', borderRadius: '0' }; // Classic distinct segments
+              cellClass = "z-10 relative shadow-sm"; 
+              innerStyle = { 
+                borderRadius: '50%',
+                background: 'radial-gradient(circle at 30% 30%, #22c55e, #14532d)'
+              }; 
             } else if (isFood) {
-              cellClass = "bg-red-600 rounded-full scale-75"; // Red circle food
-            } else if (isObstacle) {
-              // "Breaks" / Bricks
-              cellClass = "bg-orange-800 rounded-sm";
+              cellClass = "z-10 shadow-lg animate-bounce rounded-full";
               innerStyle = {
-                backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(255,255,255,0.1) 4px, rgba(255,255,255,0.1) 8px)',
-                border: '1px solid #7c2d12'
+                backgroundImage: 'url("https://images.unsplash.com/photo-1560806887-1e4cd0b6fac6?auto=format&fit=crop&w=100&q=80")',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                borderRadius: '50%'
+              };
+            } else if (isObstacle) {
+              cellClass = "z-10 shadow-xl rounded-full";
+              innerStyle = {
+                backgroundImage: 'url("https://images.unsplash.com/photo-1525926477800-7a3af9215c0e?auto=format&fit=crop&w=100&q=80")',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                borderRadius: '50%',
+                boxShadow: 'inset -5px -5px 15px rgba(0,0,0,0.6)'
               };
             }
 
             return (
               <div key={i} className="w-full h-full p-[1px]">
-                <div className={`w-full h-full ${cellClass}`} style={innerStyle}></div>
+                <div className={`w-full h-full ${cellClass}`} style={innerStyle}>
+                  {cellContent}
+                </div>
               </div>
             );
           })}
