@@ -198,6 +198,31 @@ const SnakeGame = () => {
           <X size={28} />
         </button>
       )}
+
+      {/* Game Legend (Left Side) */}
+      {!isFullscreen && (
+        <div className="w-full md:w-56 glass p-6 rounded-2xl md:order-none order-last">
+          <h4 className="font-bold text-slate-800 mb-4 pb-2 border-b border-slate-200">Game Key</h4>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-white/50 rounded-xl flex items-center justify-center shadow-sm">
+                <span className="text-2xl leading-none">🍏</span>
+              </div>
+              <span className="text-sm font-bold text-slate-700">Food (+10)</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-white/50 rounded-xl flex items-center justify-center shadow-sm">
+                <div className="relative">
+                  <span className="text-2xl leading-none">🏔️</span>
+                  <span className="absolute -top-1 -right-2 text-[12px] animate-pulse drop-shadow-[0_0_5px_rgba(250,204,21,1)] leading-none z-10">⚡</span>
+                </div>
+              </div>
+              <span className="text-sm font-bold text-slate-700">Danger (Avoid)</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex-1 w-full flex flex-col items-center">
         <div className="mb-4 flex justify-between w-full max-w-sm px-4 items-center">
           <span className="font-bold text-slate-700">Score: {score}</span>
