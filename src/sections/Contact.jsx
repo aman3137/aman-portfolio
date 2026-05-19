@@ -12,7 +12,7 @@ const Contact = () => {
     setStatus('Sending...');
     const form = e.target;
     
-    const accessKey = import.meta.env.VITE_WEB3FORMS_KEY;
+    const accessKey = "fd5b83ba-cb83-49a5-b01d-0fb194f3a294";
 
     if (!accessKey) {
       // Fallback to mailto if no access key is provided in .env
